@@ -9,18 +9,6 @@ from . import db
 from . import config
 
 
-def toCosTheta(value:str) -> float:
-    if len(value) < 1:
-        return 0.0
-    elif value[0] == 'C':
-        return int(value[1:]) / 100.0
-    elif value[0] == 'L':
-        return int(value[1:]) / -100.0
-    elif value[0] == ' ':
-        return 1.0
-    else:
-        return 0.0
-
 def main():
     port = ekmmeters.SerialPort(config.port)
     if port.initPort() == True:
@@ -48,7 +36,7 @@ def main():
                 float(bucket["RMS_Volts_Ln_1"]), float(bucket["RMS_Volts_Ln_2"]), float(bucket["RMS_Volts_Ln_3"]),
                 float(bucket["Amps_Ln_1"]), float(bucket["Amps_Ln_2"]), float(bucket["Amps_Ln_3"]),
                 float(bucket["RMS_Watts_Ln_1"]), float(bucket["RMS_Watts_Ln_2"]), float(bucket["RMS_Watts_Ln_3"]), float(bucket["RMS_Watts_Tot"]),
-                toCosTheta(bucket["Cos_Theta_Ln_1"]), toCosTheta(bucket["Cos_Theta_Ln_2"]), toCosTheta(bucket["Cos_Theta_Ln_3"]),
+                int(bucket["Power_Factor_Ln_1"]), int(bucket["Power_Factor_Ln_2"]), int(bucket["Power_Factor_Ln_3"]),
                 float(bucket["Reactive_Pwr_Ln_1"]), float(bucket["Reactive_Pwr_Ln_2"]), float(bucket["Reactive_Pwr_Ln_3"]), float(bucket["Reactive_Pwr_Tot"]),
             ))
             db_connection.commit()
