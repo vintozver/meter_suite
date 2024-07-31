@@ -24,6 +24,16 @@ port = /dev/ttySC0
 address = 300003101
 ```
 
+Create database
+```
+$ python3
+>>> import sqlite3
+>>> import meter_suite.db
+>>> db = sqlite3.connect("meter.db")
+>>> db.execute(meter_suite.db.instant_reads)
+>>> db.commit()
+```
+
 Copy *supervisor.conf* file to your supervisord config, and adjust the settings accordingly.
 
 Lastly, hook up your reverse proxy to the *meter_suite_data/http.socket* - this will be serving the interface.

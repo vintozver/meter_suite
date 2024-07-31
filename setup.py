@@ -13,6 +13,6 @@ setup(
     url='https://www.python.org/sigs/distutils-sig/',
     package_dir={'meter_suite': 'src'},
     install_requires=[
-        'jinja2', 'python_dateutil'
+        'jinja2', 'python_dateutil', 'ekmmeters'
     ],
 )
