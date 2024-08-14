@@ -2,6 +2,7 @@ import dateutil.tz
 import datetime
 import re
 import sqlite3
+from . import config
 
 
 re_latest = re.compile(r'^/\blatest\b/?')
@@ -54,21 +55,28 @@ def handle_latest(env, responder):
         for db_row in db_cursor:
             if not any_data:
                 yield 'Now: %s\n\n' % now.astimezone(tz).strftime('%Y-%m-%d %H:%M:%S')
-                yield 'DT               P       VAR    PF1    PF2    PF3     V1      V2     V3\n'
+                yield 'DT               P       VAR%s%s%s%s%s%s\n' % (
+                    '    PF1' if config.display_line1 else '',
+                    '    PF2' if config.display_line2 else '',
+                    '    PF3' if config.display_line3 else '',
+                    '     V1 ' if config.display_line1 else '',
+                    '     V2 ' if config.display_line2 else '',
+                    '     V3 ' if config.display_line3 else '',
+                )
                 any_data = True
             dt = datetime.datetime.fromisoformat(db_row["dt"])
             dt = dt.replace(tzinfo=datetime.timezone.utc)
             dt = dt.astimezone(tz)
-            yield '%s  %s  %s  %s  %s  %s  %s  %s  %s\n' % (
+            yield '%s  %s  %s%s%s%s%s%s%s\n' % (
                 dt.strftime("%H:%M:%S"),
                 '%8.0f' % float(db_row["P"]),
                 '%8.0f' % float(db_row["VAR"]),
-                format_cos_theta(int(db_row["PF_1"])),
-                format_cos_theta(int(db_row["PF_2"])),
-                format_cos_theta(int(db_row["PF_3"])),
-                '%5.2f' % float(db_row["V_1"]),
-                '%5.2f' % float(db_row["V_2"]),
-                '%5.2f' % float(db_row["V_3"]),
+                '  %s' % format_cos_theta(int(db_row["PF_1"])) if config.display_line1 else '',
+                '  %s' % format_cos_theta(int(db_row["PF_2"])) if config.display_line2 else '',
+                '  %s' % format_cos_theta(int(db_row["PF_3"])) if config.display_line3 else '',
+                '  %5.2f' % float(db_row["V_1"]) if config.display_line1 else '',
+                '  %5.2f' % float(db_row["V_2"]) if config.display_line2 else '',
+                '  %5.2f' % float(db_row["V_3"]) if config.display_line3 else '',
             )
         if not any_data:
             yield 'Nothing found'
