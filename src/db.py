@@ -33,7 +33,7 @@ instant_reads = """CREATE TABLE instant_reads (
 )"""
 
 by_hour = """CREATE TABLE by_hour (
-    dt_slot CHARACTER(11) STRING NOT NULL PRIMARY KEY,
+    dt_slot CHARACTER(11) NOT NULL PRIMARY KEY,
     kWh_1 DECIMAL(4,2) NOT NULL DEFAULT 0.0,
     kWh_2 DECIMAL(4,2) NOT NULL DEFAULT 0.0,
     kWh_3 DECIMAL(4,2) NOT NULL DEFAULT 0.0,
