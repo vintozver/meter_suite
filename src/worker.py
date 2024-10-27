@@ -9,6 +9,17 @@ from . import db
 from . import config
 
 
+def aggregate():
+    with sqlite3.connect("meter.db") as db_connection:
+        db_cursor = db_connection.cursor()
+        now = datetime.datetime.now(datetime.timezone.utc)
+        now = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        db_cursor.execute(db.insert_as_select_by_hour, (now, ))
+        db_connection.commit()
+        db_cursor.execute("DELETE FROM instant_reads WHERE dt < ?", (now, ))
+        db_connection.commit()
+
+
 def main():
     port = ekmmeters.SerialPort(config.port)
     if port.initPort() == True:
